@@ -8,7 +8,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var baseURL string = "https://map.naver.com/p/search/%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98?c=6.41,0,0,0,dh"
+var baseURL string = "https://pcmap.place.naver.com/place/list?query=%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98&x=127.59770646143932&y=35.845355799999766&clientX=126.942428&clientY=37.485309&bounds=125.88385325590485%3B33.001391604349834%3B129.39435450781872%3B38.526144869437104&ts=1700727250844&mapUrl=https%3A%2F%2Fmap.naver.com%2Fp%2Fsearch%2F%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98"
 
 func main() {
 	getTest()
@@ -47,7 +47,11 @@ func getTest() int {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
 
+	fmt.Println(doc)
+
 	searchLi := doc.Find(".TYaxT")
+
+	//fmt.Println(searchLi[0])
 
 	searchLi.Each(func(i int, sikdang *goquery.Selection) {
 		fmt.Println(sikdang.Text())
