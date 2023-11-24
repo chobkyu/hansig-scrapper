@@ -18,6 +18,8 @@ type Product struct {
 	name, price string
 }
 
+// https://velog.io/@kimdy0915/Selenium%EC%9C%BC%EB%A1%9C-%EB%84%A4%EC%9D%B4%EB%B2%84-%EC%A7%80%EB%8F%84-%ED%81%AC%EB%A1%A4%EB%A7%81%ED%95%98%EA%B8%B0
+// https://www.zenrows.com/blog/selenium-golang#parse-the-data
 func main() {
 	//getTest()
 	//sel()
@@ -47,8 +49,9 @@ func test() {
 		log.Fatal("Error:", err)
 	}
 
+	//https://pcmap.place.naver.com/place/list?query=%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98&x=127.49842900465427&y=35.66375922262287&clientX=126.942428&clientY=37.485309&bounds=125.38429339311597%3B32.13406719963322%3B129.7146967713403%3B38.96469205760175&ts=1700809713850&mapUrl=https%3A%2F%2Fmap.naver.com%2Fp%2Fsearch%2F%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98/
 	// visit the target page
-	err = driver.Get("https://pcmap.place.naver.com/place/list?query=%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98&x=127.49842900465427&y=35.66375922262287&clientX=126.942428&clientY=37.485309&bounds=125.38429339311597%3B32.13406719963322%3B129.7146967713403%3B38.96469205760175&ts=1700809713850&mapUrl=https%3A%2F%2Fmap.naver.com%2Fp%2Fsearch%2F%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98/")
+	err = driver.Get("https://map.naver.com/p/search/%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98?c=6.11,0,0,0,dh")
 	if err != nil {
 		log.Fatal("Error:", err)
 	}
@@ -56,11 +59,37 @@ func test() {
 	// retrieve the page raw HTML as a string
 	// and logging it
 
-	html, err := driver.PageSource()
+	// html, err := driver.PageSource()
+	// if err != nil {
+	// 	log.Fatal("Error:", err)
+	// }
+
+	// fmt.Println(html)
+
+	iframe, err := driver.FindElement(selenium.ByTagName, "iframe")
 	if err != nil {
-		log.Fatal("Error:", err)
+		log.Fatal("Error : ", err)
 	}
-	fmt.Println(html)
+
+	driver.SwitchFrame(iframe)
+
+	productElements, err := driver.FindElements(selenium.ByCSSSelector, ".place_bluelink N_KDL")
+	if err != nil {
+		log.Fatal("Error : ", err)
+	}
+
+	for _, productElement := range productElements {
+		nameElement, err := productElement.FindElement(selenium.ByCSSSelector, "span")
+
+		name, err := nameElement.Text()
+
+		if err != nil {
+			log.Fatal("Error : ", err)
+		}
+
+		fmt.Println(name)
+	}
+
 }
 
 func sel() {
