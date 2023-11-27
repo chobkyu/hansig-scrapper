@@ -59,6 +59,8 @@ func scrap(loc string) {
 
 	//fmt.Println(html)
 
+	getPages(driver)
+
 	productElements, err := driver.FindElements(selenium.ByCSSSelector, ".rllt__details")
 	checkErr(err)
 
@@ -87,6 +89,15 @@ func scrap(loc string) {
 		fmt.Println(star)
 		fmt.Println()
 	}
+}
+
+func getPages(driver selenium.WebDriver) int {
+	pages, err := driver.FindElements(selenium.ByCSSSelector, "td")
+	checkErr(err)
+
+	fmt.Println(len(pages))
+	fmt.Println("Page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	return len(pages)
 }
 
 func checkErr(err error) {
