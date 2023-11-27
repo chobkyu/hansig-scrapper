@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/chromedp/cdproto/dom"
+	"github.com/chromedp/chromedp"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 )
@@ -23,7 +26,47 @@ type Product struct {
 func main() {
 	//getTest()
 	//sel()
-	test()
+	//test()
+	//chromedpTest()
+	Scrap()
+}
+
+func chromedpTest() {
+	//initialize a controllable chrome instance
+	ctx, cancel := chromedp.NewContext(
+		context.Background(),
+	)
+
+	//to release the browser resources when
+	//it is no longer needed
+	defer cancel()
+
+	var html string
+
+	err := chromedp.Run(ctx,
+		//browser actions...
+		//visit the target page
+		chromedp.Navigate("https://scrapingclub.com/exercise/list_infinite_scroll/"),
+		//wait for the page to load
+		chromedp.Sleep(2000*time.Millisecond),
+		//extract the raw HTML from the page
+		chromedp.ActionFunc(func(tx context.Context) error {
+			//select the root node on the page
+			rootNode, err := dom.GetDocument().Do(ctx)
+			if err != nil {
+				return err
+			}
+			html, err = dom.GetOuterHTML().WithNodeID(rootNode.NodeID).Do(ctx)
+			return err
+		}),
+	)
+
+	if err != nil {
+		log.Fatal("Error while performing the automation logic: ", err)
+	}
+
+	fmt.Println(html)
+
 }
 
 func test() {
@@ -51,7 +94,7 @@ func test() {
 
 	//https://pcmap.place.naver.com/place/list?query=%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98&x=127.49842900465427&y=35.66375922262287&clientX=126.942428&clientY=37.485309&bounds=125.38429339311597%3B32.13406719963322%3B129.7146967713403%3B38.96469205760175&ts=1700809713850&mapUrl=https%3A%2F%2Fmap.naver.com%2Fp%2Fsearch%2F%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98/
 	// visit the target page
-	err = driver.Get("https://map.naver.com/p/search/%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98?c=6.11,0,0,0,dh")
+	err = driver.Get("https://map.naver.com/p/search/%ED%95%9C%EC%8B%9D%20%EB%B7%94%ED%8E%98?c=6.28,0,0,0,dh")
 	if err != nil {
 		log.Fatal("Error:", err)
 	}
@@ -66,14 +109,29 @@ func test() {
 
 	// fmt.Println(html)
 
-	iframe, err := driver.FindElement(selenium.ByTagName, "iframe")
+	// testEle, err := driver.FindElement(selenium.ByCSSSelector, ".blind")
+	// if err != nil {
+	// 	log.Fatal("Error : ", err)
+	// }
+
+	// fmt.Println(testEle.Text())
+
+	iframe, err := driver.FindElements(selenium.ByCSSSelector, "body > div > div > #app-layout > #section_content > div > .sc-1wsjitl > div > div > div > iframe")
 	if err != nil {
 		log.Fatal("Error : ", err)
 	}
 
-	driver.SwitchFrame(iframe)
+	fmt.Println(len(iframe))
+	driver.SwitchFrame(iframe[0])
 
-	productElements, err := driver.FindElements(selenium.ByCSSSelector, ".place_bluelink N_KDL")
+	// html, err := driver.PageSource()
+	// if err != nil {
+	// 	log.Fatal("Error:", err)
+	// }
+
+	// fmt.Println(html)
+
+	productElements, err := driver.FindElements(selenium.ByCSSSelector, ".place_on_pcmap")
 	if err != nil {
 		log.Fatal("Error : ", err)
 	}
