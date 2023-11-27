@@ -10,7 +10,7 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-func Scarp() {
+func Scrape() {
 	// initialize a controllable Chrome instance
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
