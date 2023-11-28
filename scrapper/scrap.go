@@ -97,6 +97,8 @@ func getDatas(page int, loc string) {
 				break
 			}
 
+			fmt.Println("addr 앞")
+
 			addrElement, err := productElement.FindElements(selenium.ByCSSSelector, "div")
 			if err != nil {
 				fmt.Println("no addr")
@@ -104,11 +106,15 @@ func getDatas(page int, loc string) {
 			addrTemp := "주소 없음"
 			if len(addrElement) > 2 {
 				addrTemp, err = addrElement[2].Text()
-				checkErr(err)
+				if err != nil {
+					addrTemp = "주소 없음"
+				}
 			} else {
 				fmt.Println("no addr")
 			}
 			addr := addrTemp
+
+			fmt.Println("star 앞")
 
 			starElement, err := productElement.FindElement(selenium.ByCSSSelector, ".z3HNkc")
 			var star string
@@ -116,17 +122,21 @@ func getDatas(page int, loc string) {
 				star = "리뷰 없음"
 			} else {
 				starcheck, err := starElement.GetAttribute("aria-label")
-				checkErr(err)
-				star = starcheck
+				if err == nil {
+					star = starcheck
+				}
 			}
 
 			fmt.Println(name)
 			fmt.Println(addr)
 			fmt.Println(star)
 			fmt.Println()
+
+			time.Sleep(time.Second * 2)
+
 		}
 
-		time.Sleep(time.Second * 4)
+		time.Sleep(time.Second * 2)
 	}
 
 }
