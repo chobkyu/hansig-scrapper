@@ -10,7 +10,13 @@ import (
 	"github.com/tebeka/selenium/chrome"
 )
 
-func Scrap(loc string) {
+type hansikdang struct {
+	name string
+	addr string
+	star string
+}
+
+func Scrap(loc string) []hansikdang {
 	service, err := selenium.NewChromeDriverService("./chromedriver", 4444)
 
 	checkErr(err)
@@ -31,25 +37,19 @@ func Scrap(loc string) {
 	err = driver.Get("https://www.google.com/search?q=" + loc + "+한식+뷔페&sca_esv=585526170&sz=7&cs=0&biw=1327&bih=963&tbm=lcl&ei=jUZkZamyPPLf2roP0sCX0AI&ved=0ahUKEwjprNCs1eOCAxXyr1YBHVLgBSoQ4dUDCAk&oq=%EC%84%9C%EC%9A%B8+%ED%95%9C%EC%8B%9D+%EB%B7%94%ED%8E%98&gs_lp=Eg1nd3Mtd2l6LWxvY2FsIhTshJzsmrgg7ZWc7IudIOu3lO2OmEgAUABYAHAAeACQAQCYAQCgAQCqAQC4AQzIAQA&sclient=gws-wiz-local#rlfi=hd:;si:;mv:[[37.581255999999996,127.05252650000001],[37.4620829,126.83985559999999]];tbs:lrf:!1m4!1u3!2m2!3m1!1e1!1m4!1u2!2m2!2m1!1e1!2m1!1e2!2m1!1e3!3sIAE,lf:1,lf_ui:9")
 	checkErr(err)
 
-	// create a new remote client with the specified options
-	// driver, err := selenium.NewRemote(caps, "")
-	// if err != nil {
-	// 	log.Fatal("Error:", err)
-	// }
-
-	// html, err := driver.PageSource()
-	// if err != nil {
-	// 	log.Fatal("Error:", err)
-	// }
-
-	//fmt.Println(html)
-
 	page := getPages(driver)
-	getDatas(page, loc)
+
+	hansikData := getDatas(page, loc)
+
+	fmt.Println(hansikData)
+	return hansikData
 
 }
 
-func getDatas(page int, loc string) {
+func getDatas(page int, loc string) []hansikdang {
+
+	var hansikTemp []hansikdang
+
 	for i := 1; i <= page; i++ {
 		fmt.Println("--------------------------------------")
 		fmt.Println("This page is data of ", i)
@@ -97,7 +97,7 @@ func getDatas(page int, loc string) {
 				break
 			}
 
-			fmt.Println("addr 앞")
+			//fmt.Println("addr 앞")
 
 			addrElement, err := productElement.FindElements(selenium.ByCSSSelector, "div")
 			if err != nil {
@@ -114,7 +114,7 @@ func getDatas(page int, loc string) {
 			}
 			addr := addrTemp
 
-			fmt.Println("star 앞")
+			//fmt.Println("star 앞")
 
 			starElement, err := productElement.FindElement(selenium.ByCSSSelector, ".z3HNkc")
 			var star string
@@ -127,18 +127,23 @@ func getDatas(page int, loc string) {
 				}
 			}
 
-			fmt.Println(name)
-			fmt.Println(addr)
-			fmt.Println(star)
+			// fmt.Println(name)
+			// fmt.Println(addr)
+			// fmt.Println(star)
 			fmt.Println()
-
-			time.Sleep(time.Second * 2)
+			var temp = hansikdang{
+				name: name,
+				addr: addr,
+				star: star,
+			}
+			hansikTemp = append(hansikTemp, temp)
+			time.Sleep(time.Second * 1)
 
 		}
 
 		time.Sleep(time.Second * 2)
 	}
-
+	return hansikTemp
 }
 
 func getPages(driver selenium.WebDriver) int {
