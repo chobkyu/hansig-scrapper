@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"learngo/github.com/chobkyu/hansik/models"
 	"learngo/github.com/chobkyu/hansik/repositories"
 	"net/http"
@@ -15,8 +16,9 @@ func Home(c echo.Context) error {
 
 func TestDB(c echo.Context) error {
 	test := models.Test{}
-	c.Bind(&test)
 
+	fmt.Println(c.FormValue("name"))
+	c.Bind(&test)
 	newTest, err := repositories.InsertData(test)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())

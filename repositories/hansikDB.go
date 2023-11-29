@@ -10,10 +10,13 @@ import (
 func InsertData(test models.Test) (models.Test, error) {
 	db := storage.GetDB()
 
-	fmt.Println(test)
+	fmt.Println(test.Name)
+	fmt.Println(test.Addr)
+	fmt.Println(test.Star)
+
 	sqlStatement := `insert into test.hansic (name, addr, star) 
 					values ($1,$2,$3) RETURNING id`
-	err := db.QueryRow(sqlStatement, "name", "addr", "star").Scan(&test.Id)
+	err := db.QueryRow(sqlStatement, test.Name, test.Addr, test.Star).Scan(&test.Id)
 
 	if err != nil {
 		return test, err
