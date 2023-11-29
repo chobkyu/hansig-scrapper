@@ -1,7 +1,9 @@
 package main
 
 import (
+	"learngo/github.com/chobkyu/hansik/handlers"
 	"learngo/github.com/chobkyu/hansik/router"
+	"learngo/github.com/chobkyu/hansik/storage"
 
 	"github.com/labstack/echo"
 )
@@ -12,14 +14,13 @@ func main() {
 	e := echo.New()
 
 	//GET
-	e.GET("/", handleHome)
+	e.GET("/", handlers.Home)
 	e.GET("/getData", router.GetDataAtGoogle)
 
 	//POST
 
-	e.Logger.Fatal(e.Start(":1323"))
-}
+	//init db connection
+	storage.InitDB()
 
-func handleHome(c echo.Context) error {
-	return c.File("./html/home.html")
+	e.Logger.Fatal(e.Start(":1323"))
 }
