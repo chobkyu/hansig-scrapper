@@ -16,9 +16,9 @@ func main() {
 	//GET
 	e.GET("/", handlers.Home)
 	e.GET("/getData", router.GetDataAtGoogle)
-
+	e.GET("/ttt", handlers.Test)
 	//POST
-
+	e.POST("/test", handlers.TestDB)
 	//init db connection
 	storage.InitDB()
 
