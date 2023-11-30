@@ -10,13 +10,13 @@ import (
 	"github.com/tebeka/selenium/chrome"
 )
 
-type hansikdang struct {
-	name string
-	addr string
-	star string
+type Hansikdang struct {
+	Name string
+	Addr string
+	Star string
 }
 
-func Scrap(loc string) []hansikdang {
+func Scrap(loc string) []Hansikdang {
 	service, err := selenium.NewChromeDriverService("./chromedriver", 4444)
 
 	checkErr(err)
@@ -46,9 +46,9 @@ func Scrap(loc string) []hansikdang {
 
 }
 
-func getDatas(page int, loc string) []hansikdang {
+func getDatas(page int, loc string) []Hansikdang {
 
-	var hansikTemp []hansikdang
+	var hansikTemp []Hansikdang
 
 	for i := 1; i <= page; i++ {
 		fmt.Println("--------------------------------------")
@@ -131,10 +131,10 @@ func getDatas(page int, loc string) []hansikdang {
 			// fmt.Println(addr)
 			// fmt.Println(star)
 			fmt.Println()
-			var temp = hansikdang{
-				name: name,
-				addr: addr,
-				star: star,
+			var temp = Hansikdang{
+				Name: name,
+				Addr: addr,
+				Star: star,
 			}
 			hansikTemp = append(hansikTemp, temp)
 			time.Sleep(time.Second * 1)
