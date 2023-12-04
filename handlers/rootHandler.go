@@ -15,7 +15,7 @@ func Home(c echo.Context) error {
 }
 
 func TestDB(c echo.Context) error {
-	test := models.Test{}
+	test := models.Hansic{}
 
 	fmt.Println(c.FormValue("name"))
 	c.Bind(&test)

@@ -41,6 +41,10 @@ func main() {
 	bookRoute.GET("/:id", controller.GetBook)
 	bookRoute.PUT("/:id", controller.UpdateBook)
 	bookRoute.DELETE("/:id", controller.DeleteBook)
+	bookRoute.GET("/hansik", controller.CreateData)
+
+	// hansikRoute := e.Group("/hansik")
+	// hansikRoute.GET("/", controller.CreateData)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

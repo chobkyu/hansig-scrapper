@@ -1,6 +1,6 @@
 package models
 
-type Test struct {
+type Hansic struct {
 	Id   int    `gorm:"primaryKey" json:"id" form:"id"`
 	Name string `json:"name" form:"name"`
 	Addr string `json:"addr" form:"addr"`

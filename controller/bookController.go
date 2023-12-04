@@ -4,10 +4,19 @@ import (
 	"fmt"
 	"learngo/github.com/chobkyu/hansik/config"
 	"learngo/github.com/chobkyu/hansik/models"
+	"learngo/github.com/chobkyu/hansik/scrapper"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
+
+var locate = []string{"서울", "인천", "김포", "대구", "세종", "부산", "경주", "광주", "대전", "성남", "전주", "울산"}
+
+type hansikdang struct {
+	name string
+	addr string
+	star string
+}
 
 func CreateBook(c echo.Context) error {
 	fmt.Println("create")
@@ -83,6 +92,7 @@ func UpdateBook(c echo.Context) error {
 }
 
 func GetBook(c echo.Context) error {
+	fmt.Println("get")
 	id := c.Param("id")
 	db := config.DB()
 
@@ -126,4 +136,55 @@ func DeleteBook(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+func CreateData(c echo.Context) error {
+	fmt.Println("get Data")
+	h := new(models.Hansic)
+	//db := config.DB()
+
+	if err := c.Bind(h); err != nil {
+		data := map[string]interface{}{
+			"message": err.Error(),
+		}
+
+		return c.JSON(http.StatusInternalServerError, data)
+	}
+
+	getHansikData()
+
+	return c.JSON(http.StatusOK, true)
+
+}
+
+func getHansikData() {
+	var hansikArr []hansikdang
+	for _, loc := range locate {
+		hansik := scrapper.Scrap(loc)
+		fmt.Println(hansik)
+		insertData(hansik)
+		//hansikArr = append(hansikArr, hansik)
+	}
+	fmt.Println(hansikArr)
+}
+
+func insertData(hansikData []scrapper.Hansikdang) {
+	//h := new(models.Test)
+	db := config.DB()
+
+	for _, hansik := range hansikData {
+		data := &models.Hansic{
+			Name: hansik.Name,
+			Addr: hansik.Addr,
+			Star: hansik.Star,
+		}
+
+		if err := db.Create(&data).Error; err != nil {
+			data := map[string]interface{}{
+				"message": err.Error(),
+			}
+
+			fmt.Println(data)
+		}
+	}
 }
