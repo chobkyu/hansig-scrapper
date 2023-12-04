@@ -1,8 +1,10 @@
 package router
 
 import (
+	"database/sql"
 	"fmt"
 	"learngo/github.com/chobkyu/hansik/scrapper"
+	"learngo/github.com/chobkyu/hansik/storage"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -21,9 +23,36 @@ func GetDataAtGoogle(c echo.Context) error {
 	for _, loc := range locate {
 		hansik := scrapper.Scrap(loc)
 		fmt.Println(hansik)
+		insertData(hansik)
 		//hansikArr = append(hansikArr, hansik)
 	}
 
 	fmt.Println(hansikArr)
 	return c.JSON(http.StatusOK, nil)
+}
+
+func insertData(hansikData []scrapper.Hansikdang) *sql.Row {
+	fmt.Println(len(hansikData))
+	db := storage.GetDB()
+
+	for _, hansik := range hansikData {
+		fmt.Println(hansik.Name)
+		fmt.Println(hansik.Addr)
+		fmt.Println(hansik.Star)
+
+		sqlStatement := `insert into test.hansic (name,addr,star)
+						values ($1,$2,$3) returning id`
+
+		err := db.QueryRow(sqlStatement, hansik.Name, hansik.Addr, hansik.Star)
+
+		if err != nil {
+			sqlStatement := `update test.hansic name = $1, star $2 where addr = $3`
+			db.QueryRow(sqlStatement, hansik.Name, hansik.Star, hansik.Addr)
+		}
+
+	}
+	db.Close()
+
+	return nil
+
 }
