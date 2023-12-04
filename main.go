@@ -1,9 +1,10 @@
 package main
 
 import (
+	"learngo/github.com/chobkyu/hansik/config"
+	"learngo/github.com/chobkyu/hansik/controller"
 	"learngo/github.com/chobkyu/hansik/handlers"
 	"learngo/github.com/chobkyu/hansik/router"
-	"learngo/github.com/chobkyu/hansik/storage"
 
 	"github.com/labstack/echo"
 )
@@ -19,8 +20,27 @@ func main() {
 	e.GET("/ttt", handlers.Test)
 	//POST
 	e.POST("/test", handlers.TestDB)
+
 	//init db connection
-	storage.InitDB()
+	//storage.InitDB()
+
+	//connect to database gorm
+	config.DatabaseInint()
+	gorm := config.DB()
+
+	dbGorm, err := gorm.DB()
+
+	if err != nil {
+		panic(err)
+	}
+
+	dbGorm.Ping()
+
+	bookRoute := e.Group("/book")
+	bookRoute.POST("/", controller.CreateBook)
+	bookRoute.GET("/:id", controller.GetBook)
+	bookRoute.PUT("/:id", controller.UpdateBook)
+	bookRoute.DELETE("/:id", controller.DeleteBook)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
