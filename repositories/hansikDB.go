@@ -7,7 +7,7 @@ import (
 	"learngo/github.com/chobkyu/hansik/storage"
 )
 
-func InsertData(test models.Test) (models.Test, error) {
+func InsertData(test models.Hansic) (models.Hansic, error) {
 	db := storage.GetDB()
 
 	fmt.Println(test.Name)
