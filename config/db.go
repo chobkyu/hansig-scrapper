@@ -2,8 +2,10 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,18 +14,22 @@ var database *gorm.DB
 var e error
 
 func DatabaseInint() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-	fmt.Println(os.Getenv("DB_HOST"))
-	fmt.Println(os.Getenv("DB_PORT"))
-	fmt.Println(os.Getenv("DB_USER"))
-	fmt.Println(os.Getenv("DB_PASSWORD"))
-	fmt.Println(os.Getenv("DB_NAME"))
+	// fmt.Println(os.Getenv("DB_HOST"))
+	// fmt.Println(os.Getenv("DB_PORT"))
+	// fmt.Println(os.Getenv("DB_USER"))
+	// fmt.Println(os.Getenv("DB_PASSWORD"))
+	// fmt.Println(os.Getenv("DB_NAME"))
 
-	dbHost := "localhost"
-	dbPort := "5432"
-	dbUser := "postgres"
-	dbPass := "1234"
-	dbName := "postgres"
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", dbHost, dbUser, dbPass, dbName, dbPort)
 
