@@ -159,24 +159,25 @@ func CreateData(c echo.Context) error {
 
 func getHansikData() {
 	var hansikArr []hansikdang
-	for _, loc := range locate {
+	for idx, loc := range locate {
 		hansik := scrapper.Scrap(loc)
 		fmt.Println(hansik)
-		insertData(hansik)
+		insertData(hansik, idx)
 		//hansikArr = append(hansikArr, hansik)
 	}
 	fmt.Println(hansikArr)
 }
 
-func insertData(hansikData []scrapper.Hansikdang) {
+func insertData(hansikData []scrapper.Hansikdang, idx int) {
 	//h := new(models.Test)
 	db := config.DB()
 
 	for _, hansik := range hansikData {
 		data := &models.Hansic{
-			Name: hansik.Name,
-			Addr: hansik.Addr,
-			Star: hansik.Star,
+			Name:       hansik.Name,
+			Addr:       hansik.Addr,
+			GoogleStar: hansik.Star,
+			LocationId: idx + 1,
 		}
 
 		if err := db.Create(&data).Error; err != nil {

@@ -12,11 +12,11 @@ func InsertData(test models.Hansic) (models.Hansic, error) {
 
 	fmt.Println(test.Name)
 	fmt.Println(test.Addr)
-	fmt.Println(test.Star)
+	fmt.Println(test.GoogleStar)
 
 	sqlStatement := `insert into test.hansic (name, addr, star) 
 					values ($1,$2,$3) RETURNING id`
-	err := db.QueryRow(sqlStatement, test.Name, test.Addr, test.Star).Scan(&test.Id)
+	err := db.QueryRow(sqlStatement, test.Name, test.Addr, test.GoogleStar).Scan(&test.Id)
 
 	if err != nil {
 		return test, err

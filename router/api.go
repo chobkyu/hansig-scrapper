@@ -3,8 +3,8 @@ package router
 import (
 	"database/sql"
 	"fmt"
+	"learngo/github.com/chobkyu/hansik/config"
 	"learngo/github.com/chobkyu/hansik/scrapper"
-	"learngo/github.com/chobkyu/hansik/storage"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -20,10 +20,10 @@ type hansikdang struct {
 
 func GetDataAtGoogle(c echo.Context) error {
 	var hansikArr []hansikdang
-	for _, loc := range locate {
+	for idx, loc := range locate {
 		hansik := scrapper.Scrap(loc)
 		fmt.Println(hansik)
-		insertData(hansik)
+		insertData(hansik, idx)
 		//hansikArr = append(hansikArr, hansik)
 	}
 
@@ -31,27 +31,31 @@ func GetDataAtGoogle(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
-func insertData(hansikData []scrapper.Hansikdang) *sql.Row {
+func insertData(hansikData []scrapper.Hansikdang, locId int) *sql.Row {
 	fmt.Println(len(hansikData))
-	db := storage.GetDB()
+	db := config.DB()
 
 	for _, hansik := range hansikData {
 		fmt.Println(hansik.Name)
 		fmt.Println(hansik.Addr)
 		fmt.Println(hansik.Star)
+		fmt.Println("???")
 
-		sqlStatement := `insert into test.hansic (name,addr,star)
-						values ($1,$2,$3) returning id`
+		sqlStatement := `insert into public.hansic (name,addr,star,locationId)
+						values ($1,$2,$3,$4) returning id`
 
-		err := db.QueryRow(sqlStatement, hansik.Name, hansik.Addr, hansik.Star)
+		fmt.Println("!!!")
+
+		err := db.Raw(sqlStatement, hansik.Name, hansik.Addr, hansik.Star, locId+1)
 
 		if err != nil {
-			sqlStatement := `update test.hansic name = $1, star $2 where addr = $3`
-			db.QueryRow(sqlStatement, hansik.Name, hansik.Star, hansik.Addr)
+			fmt.Println(&err)
+			sqlStatement := `update public.hansic name = $1, star $2 where addr = $3`
+			db.Raw(sqlStatement, hansik.Name, hansik.Star, hansik.Addr)
 		}
 
 	}
-	db.Close()
+	//db.Close()
 
 	return nil
 

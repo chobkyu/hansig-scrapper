@@ -19,11 +19,11 @@ func DatabaseInint() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// fmt.Println(os.Getenv("DB_HOST"))
-	// fmt.Println(os.Getenv("DB_PORT"))
-	// fmt.Println(os.Getenv("DB_USER"))
-	// fmt.Println(os.Getenv("DB_PASSWORD"))
-	// fmt.Println(os.Getenv("DB_NAME"))
+	fmt.Println(os.Getenv("DB_HOST"))
+	fmt.Println(os.Getenv("DB_PORT"))
+	fmt.Println(os.Getenv("DB_USER"))
+	fmt.Println(os.Getenv("DB_PASSWORD"))
+	fmt.Println(os.Getenv("DB_NAME"))
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
