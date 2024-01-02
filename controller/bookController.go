@@ -180,7 +180,7 @@ func insertData(hansikData []scrapper.Hansikdang, idx int) {
 			LocationId: idx + 1,
 		}
 
-		if err := db.Create(&data).Error; err != nil {
+		if err := db.Table("hansic.hansics").Create(&data).Error; err != nil {
 			data := map[string]interface{}{
 				"message": err.Error(),
 			}

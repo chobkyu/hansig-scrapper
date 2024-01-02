@@ -31,7 +31,7 @@ func DatabaseInint() {
 	dbPass := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", dbHost, dbUser, dbPass, dbName, dbPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s ", dbHost, dbUser, dbPass, dbName, dbPort)
 
 	database, e = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
