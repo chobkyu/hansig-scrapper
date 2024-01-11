@@ -180,6 +180,18 @@ func insertData(hansikData []scrapper.Hansikdang, idx int) {
 			LocationId: idx + 1,
 		}
 
+		var checkData = checkExited(data)
+
+		if checkData {
+			if err := db.Table("hansic.hansics").Create(&data).Error; err != nil {
+				data := map[string]interface{}{
+					"message": err.Error(),
+				}
+
+				fmt.Println(data)
+			}
+		}
+
 		if err := db.Table("hansic.hansics").Create(&data).Error; err != nil {
 			data := map[string]interface{}{
 				"message": err.Error(),
@@ -188,4 +200,33 @@ func insertData(hansikData []scrapper.Hansikdang, idx int) {
 			fmt.Println(data)
 		}
 	}
+}
+
+func checkExited(hansik *models.Hansic) bool {
+	db := config.DB()
+
+	var result *models.Hansic
+	db.Debug().Table("hansic.hansics").Where("name = ? AND addr = ?", "서울한식뷔페", "국회대로70길 22").Find(&result)
+
+	if result.Name == "" {
+		return true
+	} else {
+		return false
+	}
+
+}
+
+func TestData(c echo.Context) error {
+	db := config.DB()
+
+	var result *models.Hansic
+	//fmt.Println(result)
+
+	//db.Debug().Table("hansic.hansics").Model(models.Hansic{Name: "tprtm", Addr: "asdfasdf"}).Find(&result)
+
+	db.Debug().Table("hansic.hansics").Where("name = ? AND addr = ?", "서울한식뷔페", "국회대로70길 22").Find(&result)
+	fmt.Println(result.Name)
+
+	return c.JSON(http.StatusOK, true)
+
 }

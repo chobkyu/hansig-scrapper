@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/tebeka/selenium"
@@ -112,8 +113,14 @@ func getDatas(page int, loc string) []Hansikdang {
 			} else {
 				fmt.Println("no addr")
 			}
-			addr := addrTemp
 
+			var checkFlag = checkAddr(addrTemp)
+
+			if !checkFlag {
+				addrTemp = "주소 없음"
+			}
+			addr := addrTemp
+			fmt.Println(addr)
 			//fmt.Println("star 앞")
 
 			starElement, err := productElement.FindElement(selenium.ByCSSSelector, ".z3HNkc")
@@ -159,4 +166,18 @@ func checkErr(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func checkAddr(addr string) bool {
+	var notAllowedAddr = [...]string{"매장 내 식사", "가격", "한식", "뷔페", "전체", "영업", "임시", "휴업"}
+
+	var checkAllow = true
+	for _, name := range notAllowedAddr {
+		if strings.Contains(addr, name) {
+			checkAllow = false
+			break
+		}
+	}
+
+	return checkAllow
 }

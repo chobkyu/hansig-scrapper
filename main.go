@@ -40,6 +40,7 @@ func main() {
 	bookRoute.PUT("/:id", controller.UpdateBook)
 	bookRoute.DELETE("/:id", controller.DeleteBook)
 	bookRoute.GET("/hansik", controller.CreateData)
+	bookRoute.GET("/test", controller.TestData)
 
 	// hansikRoute := e.Group("/hansik")
 	// hansikRoute.GET("/", controller.CreateData)
