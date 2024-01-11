@@ -180,10 +180,23 @@ func insertData(hansikData []scrapper.Hansikdang, idx int) {
 			LocationId: idx + 1,
 		}
 
-		var checkData = checkExited(data)
+		var result *models.Hansic
+		db.Debug().Table("hansic.hansics").Where("name = ? AND addr = ?", data.Name, data.Addr).Find(&result)
 
-		if checkData {
-			if err := db.Table("hansic.hansics").Create(&data).Error; err != nil {
+		if result.Name == "" {
+			if err := db.Debug().Table("hansic.hansics").Create(&data).Error; err != nil {
+				data := map[string]interface{}{
+					"message": err.Error(),
+				}
+
+				fmt.Println(data)
+			}
+		} else {
+			result.Name = data.Name
+			result.Addr = data.Addr
+			result.GoogleStar = data.GoogleStar
+
+			if err := db.Debug().Table("hansic.hansics").Save(&result).Error; err != nil {
 				data := map[string]interface{}{
 					"message": err.Error(),
 				}
@@ -192,28 +205,14 @@ func insertData(hansikData []scrapper.Hansikdang, idx int) {
 			}
 		}
 
-		if err := db.Table("hansic.hansics").Create(&data).Error; err != nil {
-			data := map[string]interface{}{
-				"message": err.Error(),
-			}
+		// if err := db.Table("hansic.hansics").Create(&data).Error; err != nil {
+		// 	data := map[string]interface{}{
+		// 		"message": err.Error(),
+		// 	}
 
-			fmt.Println(data)
-		}
+		// 	fmt.Println(data)
+		// }
 	}
-}
-
-func checkExited(hansik *models.Hansic) bool {
-	db := config.DB()
-
-	var result *models.Hansic
-	db.Debug().Table("hansic.hansics").Where("name = ? AND addr = ?", "서울한식뷔페", "국회대로70길 22").Find(&result)
-
-	if result.Name == "" {
-		return true
-	} else {
-		return false
-	}
-
 }
 
 func TestData(c echo.Context) error {
