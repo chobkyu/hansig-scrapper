@@ -24,6 +24,7 @@ func DatabaseInint() {
 	fmt.Println(os.Getenv("DB_USER"))
 	fmt.Println(os.Getenv("DB_PASSWORD"))
 	fmt.Println(os.Getenv("DB_NAME"))
+	fmt.Println("sex")
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")

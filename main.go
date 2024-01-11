@@ -3,8 +3,6 @@ package main
 import (
 	"learngo/github.com/chobkyu/hansik/config"
 	"learngo/github.com/chobkyu/hansik/controller"
-	"learngo/github.com/chobkyu/hansik/handlers"
-	"learngo/github.com/chobkyu/hansik/router"
 
 	"github.com/labstack/echo"
 )
@@ -15,11 +13,11 @@ func main() {
 	e := echo.New()
 
 	//GET
-	e.GET("/", handlers.Home)
-	e.GET("/getData", router.GetDataAtGoogle)
-	e.GET("/ttt", handlers.Test)
-	//POST
-	e.POST("/test", handlers.TestDB)
+	// e.GET("/", handlers.Home)
+	// e.GET("/getData", router.GetDataAtGoogle)
+	// e.GET("/ttt", handlers.Test)
+	// //POST
+	// e.POST("/test", handlers.TestDB)
 
 	//init db connection
 	//storage.InitDB()
